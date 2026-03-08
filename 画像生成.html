@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nanobanana pro | SNS Loveプロンプトジェネレーター</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@400;700&family=Zen+Maru+Gothic:wght@400;500;700&family=M+PLUS+Rounded+1c:wght@400;500;700&family=Dela+Gothic+One&family=Playfair+Display:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FDF8F5;--card:#FFF;--ink:#1A1118;--sub:#6B5B6E;
+  --accent:#E8728A;--accent2:#A78BCA;--accent3:#7BBFB5;
+  --gold:#D4A843;--border:#EDE0E8;--soft:#F7EEF4;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",sans-serif;min-height:100vh;}
+.header{background:linear-gradient(135deg,#2D1B3D 0%,#1A1118 60%,#3D1F2D 100%);padding:28px 24px 18px;position:relative;overflow:hidden;}
+.header::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 70% 50%,rgba(232,114,138,.18),transparent 60%),radial-gradient(ellipse at 20% 80%,rgba(167,139,202,.15),transparent 50%);}
+.header-inner{position:relative;z-index:1;}
+.badge{display:inline-block;background:rgba(232,114,138,.2);border:1px solid rgba(232,114,138,.4);color:#F4A4B4;font-size:10px;font-weight:700;letter-spacing:3px;padding:3px 12px;border-radius:999px;margin-bottom:10px;}
+.header h1{font-family:"Playfair Display",serif;font-size:clamp(16px,3vw,24px);color:#FFF5F8;line-height:1.3;margin-bottom:4px;}
+.header h1 span{color:var(--accent);font-style:italic;}
+.header p{font-size:11px;color:rgba(255,255,255,.45);font-weight:300;}
+
+/* CHAR SECTION */
+.char-section{background:linear-gradient(135deg,#2D1B3D,#1A1118);padding:14px 24px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
+.char-section-label{font-size:9px;font-weight:700;letter-spacing:3px;color:rgba(255,255,255,.35);margin-bottom:10px;text-transform:uppercase;}
+.char-tabs{display:flex;gap:6px;margin-bottom:12px;}
+.char-tab{background:transparent;border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.45);font-family:"Noto Sans JP",sans-serif;font-size:11px;font-weight:700;padding:5px 14px;border-radius:999px;cursor:pointer;transition:all .15s;}
+.char-tab.active{border-color:var(--accent);color:var(--accent);background:rgba(232,114,138,.12);}
+.char-gallery{display:flex;gap:8px;flex-wrap:wrap;}
+.char-card{width:80px;cursor:pointer;border-radius:12px;overflow:hidden;border:2.5px solid rgba(255,255,255,.08);transition:all .2s;background:rgba(255,255,255,.04);position:relative;flex-shrink:0;}
+.char-card:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.3);}
+.char-card.sel{border-color:var(--accent);box-shadow:0 0 16px rgba(232,114,138,.4);}
+.char-card img{width:100%;height:80px;object-fit:cover;display:block;}
+.char-card-name{font-size:9px;font-weight:700;text-align:center;color:rgba(255,255,255,.55);padding:4px 3px;background:rgba(0,0,0,.3);line-height:1.3;}
+.char-card.sel .char-card-name{color:var(--accent);}
+.char-check{position:absolute;top:4px;right:4px;background:var(--accent);color:#fff;width:15px;height:15px;border-radius:50%;display:none;align-items:center;justify-content:center;font-size:8px;font-weight:700;}
+.char-card.sel .char-check{display:flex;}
+
+.main{padding:20px 24px;max-width:960px;margin:0 auto;}
+.sec-label{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:10px;margin-top:18px;}
+.sec-label::after{content:"";flex:1;height:1px;background:var(--border);}
+.theme-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:20px;}
+.theme-card{border:2px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:all .2s;background:var(--card);position:relative;overflow:hidden;}
+.theme-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--tc,var(--accent));opacity:0;transition:opacity .2s;}
+.theme-card:hover::before,.theme-card.sel::before{opacity:1;}
+.theme-card:hover{border-color:var(--tc,var(--accent));transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.07);}
+.theme-card.sel{border-color:var(--tc,var(--accent));background:rgba(232,114,138,.02);}
+.theme-icon{font-size:20px;margin-bottom:6px;}
+.theme-name{font-size:12px;font-weight:700;}
+.theme-sub{font-size:10px;color:var(--sub);margin-top:2px;line-height:1.3;}
+.content-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:6px;margin-bottom:20px;}
+.content-btn{background:var(--soft);border:1.5px solid var(--border);border-radius:9px;padding:8px 10px;font-family:"Noto Sans JP",sans-serif;font-size:11px;font-weight:500;color:var(--sub);cursor:pointer;transition:all .15s;text-align:center;}
+.content-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+.content-btn.sel{background:rgba(167,139,202,.12);border-color:var(--accent2);color:var(--accent2);font-weight:700;}
+
+/* BUZZ & AUTO */
+.buzz-box{background:linear-gradient(135deg,rgba(232,114,138,.06),rgba(212,168,67,.04));border:1.5px solid rgba(232,114,138,.25);border-radius:14px;padding:14px;margin-bottom:12px;}
+.buzz-title{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:2px;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.buzz-chips{display:flex;flex-wrap:wrap;gap:6px;}
+.buzz-chip{background:rgba(232,114,138,.08);border:1px solid rgba(232,114,138,.3);border-radius:999px;padding:5px 12px;font-size:11px;color:#C45874;cursor:pointer;transition:all .15s;font-weight:500;}
+.buzz-chip:hover{background:rgba(232,114,138,.2);transform:scale(1.03);}
+.btn-shuffle{background:transparent;border:1px solid var(--border);border-radius:999px;padding:4px 10px;font-size:10px;color:var(--sub);cursor:pointer;font-family:"Noto Sans JP",sans-serif;transition:all .15s;}
+.btn-shuffle:hover{border-color:var(--accent);color:var(--accent);}
+.auto-box{background:linear-gradient(135deg,rgba(167,139,202,.07),rgba(232,114,138,.04));border:1.5px solid rgba(167,139,202,.3);border-radius:14px;padding:16px;margin-bottom:16px;}
+.auto-box-title{font-size:10px;font-weight:700;color:var(--accent2);letter-spacing:2px;margin-bottom:9px;}
+.auto-input-row{display:flex;gap:7px;}
+.auto-input{flex:1;background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--ink);font-family:"Noto Sans JP",sans-serif;font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s;}
+.auto-input:focus{border-color:var(--accent2);}
+.btn-auto{background:var(--accent2);color:#fff;border:none;border-radius:9px;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:9px 14px;cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;}
+.btn-auto:hover:not(:disabled){background:#8B6BB5;}
+.btn-auto:disabled{background:#ccc;cursor:not-allowed;}
+.auto-status{font-size:11px;color:var(--sub);margin-top:7px;min-height:14px;}
+
+/* FORM */
+.form-row{margin-bottom:16px;}
+.form-label{font-size:11px;font-weight:700;color:var(--sub);margin-bottom:6px;display:block;}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--ink);font-family:"Noto Sans JP",sans-serif;font-size:13px;padding:9px 12px;outline:none;transition:border-color .2s;}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent);}
+.form-textarea{resize:vertical;min-height:65px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:540px){.form-grid{grid-template-columns:1fr;}}
+.compare-items{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.compare-item{display:flex;gap:6px;align-items:center;}
+.compare-item-side{flex:1;}
+.item-input{background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--ink);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding:8px 10px;outline:none;transition:border-color .2s;width:100%;}
+.item-input:focus{border-color:var(--accent);}
+.vs-badge{font-size:9px;font-weight:700;color:var(--accent2);background:rgba(167,139,202,.12);border-radius:999px;padding:3px 8px;white-space:nowrap;flex-shrink:0;}
+.btn-del{background:transparent;border:none;color:var(--sub);cursor:pointer;font-size:14px;transition:color .2s;flex-shrink:0;padding:4px;}
+.btn-del:hover{color:var(--accent);}
+.btn-add{background:var(--soft);border:1.5px dashed var(--border);border-radius:8px;padding:7px 14px;font-size:11px;color:var(--sub);cursor:pointer;width:100%;font-family:"Noto Sans JP",sans-serif;font-weight:700;margin-bottom:16px;transition:all .15s;}
+.btn-add:hover{border-color:var(--accent);color:var(--accent);}
+.ranking-items{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.ranking-item{display:flex;gap:8px;align-items:center;}
+.ranking-num{font-size:14px;font-weight:900;color:var(--accent2);width:24px;flex-shrink:0;text-align:center;}
+.ranking-item-input{background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--ink);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding:8px 10px;outline:none;transition:border-color .2s;flex:1;}
+.ranking-item-input:focus{border-color:var(--accent);}
+.checklist-items{display:flex;flex-direction:column;gap:6px;margin-bottom:12px;}
+.checklist-item{display:flex;gap:8px;align-items:center;}
+.checklist-item-input{background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--ink);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding:8px 10px;outline:none;transition:border-color .2s;flex:1;}
+.checklist-item-input:focus{border-color:var(--accent);}
+.tier-builder{background:var(--soft);border:1.5px solid var(--border);border-radius:12px;padding:14px;margin-bottom:16px;}
+.tier-builder-title{font-size:10px;font-weight:700;color:var(--sub);letter-spacing:2px;margin-bottom:10px;}
+.tier-row{display:flex;gap:8px;align-items:center;margin-bottom:6px;}
+.tier-badge{width:34px;height:34px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;flex-shrink:0;color:#fff;}
+.t-s{background:#FF6B6B;}.t-a{background:#FF9F43;}.t-b{background:#54A0FF;}.t-c{background:#1DD1A1;}.t-d{background:#576574;}
+.tier-input{background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--ink);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding:8px 10px;outline:none;flex:1;}
+.tier-input:focus{border-color:var(--accent);}
+
+/* STYLE */
+.style-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px;}
+@media(max-width:480px){.style-grid{grid-template-columns:1fr 1fr;}}
+.style-btn{background:var(--card);border:1.5px solid var(--border);border-radius:9px;padding:8px;cursor:pointer;text-align:center;transition:all .15s;font-family:"Noto Sans JP",sans-serif;}
+.style-btn:hover{border-color:var(--accent2);}
+.style-btn.sel{border-color:var(--accent2);background:rgba(167,139,202,.07);}
+.style-swatch{height:24px;border-radius:5px;margin-bottom:4px;}
+.style-name{font-size:10px;font-weight:700;color:var(--ink);}
+.font-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px;}
+@media(max-width:540px){.font-grid{grid-template-columns:1fr 1fr;}}
+.font-btn{background:var(--card);border:1.5px solid var(--border);border-radius:9px;padding:10px 8px;cursor:pointer;text-align:center;transition:all .15s;}
+.font-btn:hover{border-color:var(--gold);}
+.font-btn.sel{border-color:var(--gold);background:rgba(212,168,67,.07);}
+.font-preview{font-size:16px;margin-bottom:4px;line-height:1.3;color:var(--ink);}
+.font-name{font-size:9px;font-weight:700;color:var(--sub);}
+.divider{height:1px;background:var(--border);margin:20px 0;}
+
+/* BTN GEN */
+.btn-gen{width:100%;background:linear-gradient(135deg,#E8728A,#C45874);color:#fff;font-family:"Noto Sans JP",sans-serif;font-size:15px;font-weight:900;padding:16px;border:none;border-radius:13px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 4px 20px rgba(232,114,138,.3);}
+.btn-gen:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(232,114,138,.4);}
+.btn-imggen{width:100%;background:linear-gradient(135deg,#A78BCA,#7BBFB5);color:#fff;font-family:"Noto Sans JP",sans-serif;font-size:14px;font-weight:900;padding:14px;border:none;border-radius:13px;cursor:pointer;letter-spacing:1px;transition:all .2s;box-shadow:0 4px 20px rgba(167,139,202,.3);margin-top:12px;}
+.btn-imggen:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 30px rgba(167,139,202,.4);}
+.btn-imggen:disabled{background:#ccc;cursor:not-allowed;box-shadow:none;}
+
+/* OUTPUT */
+.output-box{margin-top:24px;background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:20px;display:none;animation:fadeUp .35s ease;box-shadow:0 4px 22px rgba(0,0,0,.06);}
+.output-box.show{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.output-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.output-title{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase;}
+.btn-copy{background:transparent;border:1.5px solid var(--accent);color:var(--accent);font-family:"Noto Sans JP",sans-serif;font-size:11px;font-weight:700;padding:5px 14px;border-radius:999px;cursor:pointer;transition:all .15s;}
+.btn-copy:hover{background:var(--accent);color:#fff;}
+.btn-copy.done{background:var(--accent3);border-color:var(--accent3);color:#fff;}
+.prompt-tabs{display:flex;gap:4px;margin-bottom:12px;}
+.prompt-tab{font-size:10px;font-weight:700;padding:4px 12px;border-radius:999px;border:1.5px solid var(--border);cursor:pointer;transition:all .15s;background:transparent;color:var(--sub);font-family:"Noto Sans JP",sans-serif;}
+.prompt-tab.sel{background:rgba(232,114,138,.1);border-color:var(--accent);color:var(--accent);}
+.prompt-text{font-size:12.5px;line-height:1.8;color:var(--ink);white-space:pre-wrap;word-break:break-word;background:var(--soft);border-radius:9px;padding:13px 15px;border:1px solid var(--border);}
+.preview-card{margin-top:16px;border:1.5px dashed var(--accent2);border-radius:12px;padding:14px;background:rgba(167,139,202,.04);}
+.preview-title{font-size:9px;font-weight:700;color:var(--accent2);letter-spacing:2px;margin-bottom:8px;}
+.prev-row{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin-bottom:4px;}
+.prev-pos{background:rgba(232,114,138,.07);border:1px solid rgba(232,114,138,.2);border-radius:6px;padding:6px 8px;font-size:11px;color:#C45874;}
+.prev-neg{background:rgba(107,91,110,.05);border:1px solid rgba(107,91,110,.12);border-radius:6px;padding:6px 8px;font-size:11px;color:var(--sub);}
+.prev-vs{font-size:8px;font-weight:700;color:var(--accent2);text-align:center;}
+.tier-prev-row{display:flex;gap:7px;align-items:flex-start;margin-bottom:5px;}
+.tier-prev-badge{width:30px;height:30px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;color:#fff;flex-shrink:0;}
+.tier-prev-content{background:rgba(232,114,138,.07);border:1px solid rgba(232,114,138,.18);border-radius:5px;padding:5px 9px;font-size:11px;color:#C45874;flex:1;}
+
+.img-result{margin-top:16px;text-align:center;}
+.img-result img{max-width:100%;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.12);}
+.img-status{font-size:11px;color:var(--sub);margin-top:8px;}
+.btn-dl{display:inline-block;margin-top:10px;background:var(--accent3);color:#fff;border:none;border-radius:9px;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:8px 18px;cursor:pointer;text-decoration:none;transition:all .15s;}
+.btn-dl:hover{background:#5da89e;}
+
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:4px;}
+.spinner-dark{border:2px solid rgba(107,91,110,.2);border-top-color:var(--accent2);}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* 🔐 パスワードロック用CSS */
+#passwordOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 17, 24, 0.95); /* --inkに近い色で透過 */
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.password-box {
+  background: var(--card);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  text-align: center;
+  max-width: 90%;
+  width: 320px;
+}
+</style>
+</head>
+<body>
+
+<div id="passwordOverlay">
+  <div class="password-box">
+    <div style="font-size:32px; margin-bottom:10px;">🔒</div>
+    <h2 style="font-size: 14px; color: var(--ink); margin-bottom: 20px; font-weight:700;">パスワードを入力してください</h2>
+    <input type="password" id="accessPassword" class="form-input" style="margin-bottom: 16px; text-align: center; font-size:16px;" placeholder="Password" onkeypress="if(event.key === 'Enter') checkPassword()">
+    <button class="btn-gen" style="padding: 12px 20px; font-size: 14px;" onclick="checkPassword()">ロック解除</button>
+    <p id="pwError" style="color: #E8728A; font-size: 11px; margin-top: 12px; display: none; font-weight:700;">⚠️ パスワードが違います</p>
+  </div>
+</div>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="badge">NANOBANANA PRO v20</div>
+    <h1>SNS <span>Love</span> プロンプトジェネレーター</h1>
+    <p>テーマ選択 → キャラ選択 → AI自動生成 → 画像もその場で生成！</p>
+  </div>
+</div>
+
+<div class="char-section">
+  <div class="char-section-label">キャラクターを選ぶ</div>
+  <div class="char-tabs">
+    <button class="char-tab active" onclick="switchCharTab(this,'boys')">👦 男の子</button>
+    <button class="char-tab" onclick="switchCharTab(this,'girls')">👧 女の子</button>
+    <button class="char-tab" onclick="switchCharTab(this,'both')">✨ ペア</button>
+  </div>
+  <div class="char-gallery" id="charGallery"></div>
+</div>
+
+<div class="main" style="padding-top: 0; padding-bottom: 0;">
+  <div style="background:rgba(232,114,138,.05); border:1.5px solid rgba(232,114,138,.3); border-radius:14px; padding:16px; margin-top:16px;">
+    <div style="font-size:11px; font-weight:700; color:var(--accent); margin-bottom:8px;">🔑 Gemini APIキー設定</div>
+    <div style="display:flex; gap:8px;">
+      <input type="password" id="apiKeyInput" class="form-input" placeholder="AIzaSy...（新しいAPIキーを入力）" style="flex:1;">
+      <button class="btn-auto" onclick="saveApiKey()" style="background:var(--accent); min-width:80px;">保存</button>
+    </div>
+    <div style="font-size:10px; color:var(--sub); margin-top:8px;">※キーはあなたのブラウザにのみ保存され、外部に漏れることはありません。</div>
+    <div id="apiKeyStatus" style="font-size:11px; margin-top:4px; font-weight:bold; color:var(--accent3);"></div>
+  </div>
+</div>
+
+<div class="main">
+<div class="sec-label">STEP 1 — テーマを選ぶ</div>
+<div class="theme-grid" id="themeGrid"></div>
+
+<div class="sec-label">STEP 2 — コンテンツ形式</div>
+<div class="content-grid" id="contentGrid"></div>
+
+<div class="sec-label">STEP 3 — 内容を設定</div>
+
+<div class="buzz-box">
+  <div class="buzz-title">🔥 今バズってるワード <button class="btn-shuffle" onclick="shuffleBuzz()">🔄 シャッフル</button></div>
+  <div class="buzz-chips" id="buzzChips"></div>
+</div>
+
+<div class="auto-box">
+  <div class="auto-box-title">🤖 Gemini AIで自動生成</div>
+  <div class="auto-input-row">
+    <input class="auto-input" id="autoInput" placeholder="テーマやキーワードを入力（例: 蛙化現象、朝活ルーティン）">
+    <button class="btn-auto" id="btnAuto" onclick="autoGenerate()">✨ AI生成</button>
+  </div>
+  <div class="auto-status" id="autoStatus"></div>
+</div>
+
+<div id="compareSection">
+  <div style="margin-bottom:11px;">
+    <div id="labelVsRow" class="form-grid">
+      <div><label class="form-label" id="labelLeftText">❤️ ポジティブ側</label><input class="form-input" id="labelLeft" value="愛される人" placeholder="例: モテる人"></div>
+      <div id="labelRightWrap"><label class="form-label">🩶 ネガティブ側</label><input class="form-input" id="labelRight" value="愛されにくい人" placeholder="例: モテない人"></div>
+    </div>
+  </div>
+  <div class="compare-items" id="compareItems"></div>
+  <button class="btn-add" onclick="addItem()">＋ 項目を追加</button>
+</div>
+
+<div id="rankingSection" style="display:none">
+  <div class="ranking-items" id="rankingItems"></div>
+  <button class="btn-add" onclick="addRankingItem()">＋ 項目を追加</button>
+</div>
+
+<div id="checklistSection" style="display:none">
+  <div class="checklist-items" id="checklistItems"></div>
+  <button class="btn-add" onclick="addChecklistItem()">＋ 項目を追加</button>
+</div>
+
+<div id="tierSection" style="display:none">
+  <div class="tier-builder">
+    <div class="tier-builder-title">各ティアの説明</div>
+    <div id="tierRows"></div>
+  </div>
+</div>
+
+<div id="quoteSection" style="display:none">
+  <div class="form-row">
+    <label class="form-label">💭 名言・気づきの内容</label>
+    <textarea class="form-textarea" id="quoteText" style="min-height:90px;" placeholder="心がときめく一言を入力してください"></textarea>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<div class="sec-label">STEP 4 — ビジュアル設定</div>
+<div class="form-row">
+  <label class="form-label">キャラクターの説明（上のタブで自動入力されます）</label>
+  <textarea class="form-textarea" id="charDesc"></textarea>
+</div>
+<div class="form-row">
+  <label class="form-label">色トーン</label>
+  <div class="style-grid" id="styleGrid"></div>
+</div>
+<div class="form-grid">
+  <div class="form-row">
+    <label class="form-label">アスペクト比</label>
+    <select class="form-select" id="aspectRatio">
+      <option value="4:5" selected>4:5（インスタ縦型）</option>
+      <option value="1:1">1:1（正方形）</option>
+      <option value="9:16">9:16（リール・TikTok）</option>
+      <option value="16:9">16:9（Twitter横）</option>
+    </select>
+  </div>
+  <div class="form-row">
+    <label class="form-label">詳細度</label>
+    <select class="form-select" id="detail">
+      <option value="standard">標準</option>
+      <option value="detailed">詳細（保存率UP）</option>
+      <option value="minimal">シンプル（おしゃれ感）</option>
+    </select>
+  </div>
+</div>
+
+<div class="sec-label">STEP 5 — フォント選択</div>
+<div class="font-grid" id="fontGrid"></div>
+
+<div class="form-row">
+  <label class="form-label">追加指示（オプション）</label>
+  <textarea class="form-textarea" id="extraNotes" placeholder="例: 和風テイスト、パステルカラー、金箔装飾など"></textarea>
+</div>
+
+<button class="btn-gen" onclick="generatePrompt()">💕 プロンプトを生成する</button>
+
+<div class="output-box" id="outputBox">
+  <div class="output-header">
+    <div class="output-title">📋 生成されたプロンプト</div>
+    <button class="btn-copy" id="btnCopyPrompt" onclick="copyPrompt()">📋 コピー</button>
+  </div>
+  <div class="prompt-tabs">
+    <button class="prompt-tab sel" onclick="switchTab(this,'ja')">日本語</button>
+    <button class="prompt-tab" onclick="switchTab(this,'en')">English</button>
+    <button class="prompt-tab" onclick="switchTab(this,'tips')">💡 Tips</button>
+  </div>
+  <div class="prompt-text" id="promptJa"></div>
+  <div class="prompt-text" id="promptEn" style="display:none;"></div>
+  <div class="prompt-text" id="promptTips" style="display:none;"></div>
+  <div class="preview-card" id="previewCard"></div>
+  <button class="btn-imggen" id="btnImgGen" onclick="generateImage()" style="display:none;">🎨 この設定で画像を生成する</button>
+  <div class="img-result" id="imgResult" style="display:none;"></div>
+</div>
+
+<div class="output-box" id="snsPostBox" style="margin-top:14px;">
+  <div class="output-header">
+    <div class="output-title" style="color:var(--accent3);">📱 SNS投稿文</div>
+    <button class="btn-copy" id="btnCopySns" style="border-color:var(--accent3);color:var(--accent3);" onclick="copySnsPost()">📋 コピー</button>
+  </div>
+  <div class="prompt-text" id="snsPostText" style="line-height:1.9;"></div>
+</div>
+
+</div>
+
+<script>
+// ==================== API CONFIG ====================
+const TEXT_MODEL = 'gemini-2.5-flash';
+const IMAGE_MODEL = 'gemini-3.1-flash-image-preview'; 
+
+// ⚠️ 画像データ (Base64) をここに貼り付けてください ⚠️
+const IMG_kuro_chibi = ""; 
+const IMG_kuro_normal = "";
+const IMG_shiro_chibi = "";
+const IMG_shiro_normal = "";
+
+// =================== CHAR DATA (ピアス追加版) ===================
+let curChar = 'kuro_chibi';
+let curCharTab = 'boys';
+
+const CHARS = {
+  boys: [
+    { id:'kuro_chibi',  line1:'黒髪くん', line2:'ちびキャラ', desc:'黒髪ショートの男の子が黒猫を抱いたアニメちびキャラ（水彩風・丸くてかわいい・ふんわりした絵柄）。左耳に小さなシルバーのスクエア型のピアスをつけている。', img: (typeof IMG_kuro_chibi !== 'undefined' ? IMG_kuro_chibi : null) },
+    { id:'kuro_normal', line1:'黒髪くん', line2:'等身',    desc:'黒髪ショートのアニメ男子が黒猫と寄り添う水彩イラスト（等身・ナチュラル・淡い色彩）。左耳に小さなシルバーのスクエア型のピアスをつけている。', img: (typeof IMG_kuro_normal !== 'undefined' ? IMG_kuro_normal : null) },
+    { id:'shiro_chibi', line1:'白髪くん', line2:'ちびキャラ', desc:'白銀髪の男の子が柴犬ぬいぐるみを抱くアニメちびキャラ（水彩風・ほっこり温かみのある絵柄）', img: (typeof IMG_shiro_chibi !== 'undefined' ? IMG_shiro_chibi : null) },
+    { id:'shiro_normal',line1:'白髪くん', line2:'等身',    desc:'白銀髪・青い瞳のアニメ男子がコーギーのぬいぐるみを抱く水彩イラスト（等身・繊細な線・淡いグレー・トーン）', img: (typeof IMG_shiro_normal !== 'undefined' ? IMG_shiro_normal : null) },
+  ],
+  girls: [
+    { id:'girl_pink',     line1:'ピンク茶髪', line2:'女の子',   desc:'ピンクがかった茶髪・大きな瞳の女の子アニメちびキャラ（水彩風・花やリボンのモチーフ・ふんわりした服装）', img:null },
+    { id:'girl_lavender', line1:'ラベンダー', line2:'女の子',   desc:'薄紫髪の女の子アニメキャラ（水彩風・星のモチーフ・柔らかい表情・等身・ナチュラルな雰囲気）', img:null },
+    { id:'girl_honey',    line1:'ハニー',     line2:'ブロンド',  desc:'ハニーブロンドの女の子ちびキャラ（アニメ水彩風・明るく元気な表情・花柄のワンピース）', img:null },
+    { id:'girl_dark',     line1:'黒髪の',    line2:'女の子',   desc:'黒髪ストレートの女の子アニメキャラ（水彩風・クールで知的な雰囲気・シンプルな服装）', img:null },
+  ],
+  both: [
+    { id:'both_kuro',  line1:'黒髪ペア', line2:'',  desc:'黒髪男の子（黒猫）と茶髪女の子が並ぶカップル風アニメちびキャラ（水彩風・ほっこり甘い雰囲気）', img:null },
+    { id:'both_shiro', line1:'白髪ペア', line2:'',  desc:'白銀髪男の子（柴犬）とラベンダー髪女の子が寄り添うアニメイラスト（水彩風・透明感のある配色）', img:null },
+  ]
+};
+
+// ==================== CONTENT DB ====================
+const CONTENT_DB = {
+  love: {
+    label: { ll: '愛される人', lr: '愛されにくい人' },
+    kw: ['モテ','恋愛','愛され','好かれ','彼氏','彼女','デート','片思い','蛙化','好き避け'],
+    compare: [
+      ['相手の話を最後まで聞く','自分の話にすり替える'],
+      ['感謝を言葉でちゃんと伝える','「当たり前」と思って伝えない'],
+      ['弱さを素直に見せられる','強がって本音を隠す'],
+      ['相手の時間を大切にする','平気でドタキャンする'],
+      ['笑顔であいさつする','目を合わせずスマホを見る']
+    ],
+    ranking: ['相手の話を最後まで聞く','感謝を言葉で伝える','名前を呼びながら話す','弱さを素直に見せる','笑顔であいさつする'],
+    tier: { s:'感謝・共感・笑顔が自然にできる', a:'弱さも素直に見せられる', b:'相手の時間を尊重できる', c:'たまに自分中心になる', d:'無意識に相手を試している' },
+    quote: ['愛されたいなら、まず自分が安心できる人になること。\n不安な心は、不安な愛し方をする。','「好かれたい」と「大切にされたい」は違う。\n前者は演技で近づけるが、後者は本質でしか届かない。','人は「完璧な人」より「自分をわかってくれる人」を選ぶ。']
+  },
+  avoid: {
+    label: { ll: '安定型の人', lr: '回避・不安型の人' },
+    kw: ['回避型','不安型','愛着','アタッチメント','恐れ回避','執着','共依存'],
+    compare: [
+      ['感情を素直に言葉にできる','心の中で抱え込んでしまう'],
+      ['一人の時間で充電できる','一人だと不安が募る'],
+      ['「不安」を正直に伝えられる','「大丈夫」と言って距離を置く'],
+      ['相手を信頼して寄りかかれる','信頼した途端に怖くなる'],
+      ['失敗しても関係が壊れないと知っている','少しのすれ違いで終わりを感じる']
+    ],
+    ranking: ['感情を素直に言葉にできる','一人の時間で充電できる','「不安」を正直に伝えられる','相手を信頼して寄りかかれる','失敗しても関係が壊れないと知っている'],
+    tier: { s:'不安を感じても自分で落ち着かせられる', a:'感情を言葉にして伝えられる', b:'不安はあるが自分で気づける', c:'心の壁を張りやすい', d:'感情を全部押し込めている' },
+    quote: ['不安は、あなたを守ろうとする心の表れだ。\nそれを責めなくていい。ただ、気づいてあげて。','心が開くのは、安心できる人がいる時だけ。\nそれは弱さではなく、賢さだ。','「強くなれない」のではなく、\n「安心できる場所がなかった」だけかもしれない。']
+  },
+  self: {
+    label: { ll: '自己肯定感が高い人', lr: '自己肯定感が低い人' },
+    kw: ['自己肯定感','自信','自己愛','自分軸','自己嫌悪','セルフケア'],
+    compare: [
+      ['失敗を「学び」と捉える','失敗を「自分はダメだ」の証拠にする'],
+      ['「よくやった」と自分に言える','「どうせ自分なんか」が口癖'],
+      ['他人の評価を参考にする程度','コメント一つで一日が変わる'],
+      ['NOと言える境界線がある','断れなくて疲弊する'],
+      ['自分の感情を大切にする','我慢が美徳だと思っている']
+    ],
+    ranking: ['コメント一つで揺れない','失敗を学びに変えられる','NOと言える','自分をほめられる','比べるのは昨日の自分だけ'],
+    tier: { s:'何があっても自分の価値は変わらないと知っている', a:'失敗してもおのずと立ち直れる', b:'不安になるが自分で気づける', c:'他人の評価で気持ちが波立つ', d:'自分を責めるのが当たり前になっている' },
+    quote: ['自己肯定感は「自分を好き」ではなく、\n「自分でいていい」という感覚だ。','他人の100の称賛より、\n自分の1つの「よくやった」の方が長持ちする。','「お前はもっとできる」と言われるより、\n「今のままでいい」と思える方が強い。']
+  },
+  mind: {
+    label: { ll: '成長する人', lr: '変われない人' },
+    kw: ['マインド','成長','思考','メンタル','習慣','変わりたい','行動力','マインドフルネス'],
+    compare: [
+      ['行動してから考える','考えすぎて動けない'],
+      ['失敗を「経験」で終わらせる','失敗を「言い訳」にする'],
+      ['比べるのは昨日の自分だけ','いつも他人と比べてしまう'],
+      ['環境のせいにしない','「でも」「だって」が多い'],
+      ['小さな変化を積み重ねる','大きな変化だけを求めて動けない']
+    ],
+    ranking: ['行動してから考える','比べるのは昨日の自分だけ','失敗を次への燃料にする','「でも」を言わない','小さな前進を感じられる'],
+    tier: { s:'行動・成長・感謝が自然にできる', a:'失敗しても立ち直りが早い', b:'モチベーションに波がある', c:'環境のせいにしがち', d:'変わりたいが何もしない' },
+    quote: ['変われないのは、意志が弱いからじゃない。\nやり方が自分に合っていないだけだ。','「完璧になってから」を待っていると、\n完璧な日は永遠に来ない。','昨日より少しだけ勇気のある自分でいられたなら、\nそれで十分だ。']
+  },
+  relationship: {
+    label: { ll: '大切にされる人', lr: '疲れる人間関係を作る人' },
+    kw: ['人間関係','信頼','コミュニケーション','友達','職場','距離感','マウンティング'],
+    compare: [
+      ['相手の立場で物事を考える','自分の正しさを押しつける'],
+      ['約束を守るか、誠実に断る','都合で変えてしまう'],
+      ['長所を言葉にする','欠点指摘が先に出る'],
+      ['何があっても味方でいる','調子のいい時だけ近くにいる'],
+      ['秘密を守る','つい口が軽くなる']
+    ],
+    ranking: ['相手の立場で考える','約束を守るか誠実に断る','長所を言葉にする','見返りを期待しない','何があっても味方でいる'],
+    tier: { s:'誰からも信頼される人格者', a:'信頼されて大切にされる', b:'普通の人間関係を維持できる', c:'たまに自己中な物言いが出る', d:'人間関係がうまくいかないことが多い' },
+    quote: ['人は「完璧な人」より「自分をわかってくれる人」を選ぶ。\n技術より、存在の質。','信頼される人は、裏切らない人じゃない。\n裏切った時に誠実に向き合える人だ。','相手を変えようとするくらいなら、\n自分のものの見方を変える方が早い。']
+  },
+  life: {
+    label: { ll: '充実した毎日を送る人', lr: 'なんとなく毎日が過ぎる人' },
+    kw: ['暮らし','生活','ルーティン','朝活','時間管理','充実','デジタルデトックス'],
+    compare: [
+      ['朝にスマホでなく本を開く','起きてすぐSNSを見る'],
+      ['お金の使い道を意識している','衝動買いが多い'],
+      ['小さな感謝を日記に残す','ないものばかりが目につく'],
+      ['夜にスマホを消す時間を作る','夜更かしで心の充実感が薄れる'],
+      ['「今日の小さな前進」を感じる','大きな変化だけを期待して落ち込む']
+    ],
+    ranking: ['朝にスマホでなく本を開く','小さな感謝を日記に残す','お金の使い道を意識する','夜にスマホを消す時間を作る','「今日の小さな前進」を感じる'],
+    tier: { s:'充実・習慣・感謝が自然にできる', a:'習慣が安定し身体が動く', b:'メリハリがある日もある', c:'なんとなく日々が過ぎる', d:'生活リズムが完全に崩れている' },
+    quote: ['最高の毎日を目指すのではなく、\n「昨日より少ししっくりした今日」を目標にする。','小さな習慣が続けば、\n強い意志なんてなくても変われる。','りっぱな毎日よりも、\n「おや」と思える小さな毎日の方が長く続く。']
+  }
+};
+
+const THEME_CONFIG = {
+  love:         { icon:'💕', name:'恋愛・モテ',     sub:'好かれる人・嫌われる人の違い', color:'#E8728A' },
+  avoid:        { icon:'🔒', name:'回避・不安型',   sub:'愛着スタイルを理解する',       color:'#8B6BB5' },
+  self:         { icon:'✨', name:'自己肯定感',     sub:'自信がある人・ない人の思考',   color:'#A78BCA' },
+  mind:         { icon:'🌿', name:'マインドセット', sub:'成長する人・しない人の習慣',   color:'#7BBFB5' },
+  relationship: { icon:'🤝', name:'人間関係',       sub:'大切にされる人の共通点',       color:'#D4A843' },
+  life:         { icon:'🌸', name:'暮らし・習慣',   sub:'豊かな人の日常ルーティン',     color:'#E88A72' }
+};
+
+const CONTENT_CONFIG = {
+  compare5:  { icon:'💬', name:'5項目比較' },
+  compare3:  { icon:'⚡', name:'3項目比較' },
+  ranking:   { icon:'🏆', name:'ランキング' },
+  tierlist:  { icon:'🎯', name:'ティアリスト' },
+  checklist: { icon:'✅', name:'チェックリスト' },
+  quote:     { icon:'💭', name:'名言カード' }
+};
+
+const STYLE_DESC = {
+  soft_pink:    { name:'ソフトピンク',     colors:['#FFD6E0','#FFECD2'], desc:'パステルピンク・コーラル系' },
+  purple_dream: { name:'パープルドリーム', colors:['#D4B0FF','#A78BCA'], desc:'ラベンダー・ドリーミー系' },
+  mono_chic:    { name:'モノクロシック',   colors:['#E8E8E8','#FFF'],    desc:'ホワイト・グレー系' },
+  mint_fresh:   { name:'ミントフレッシュ', colors:['#B8EDD9','#7BBFB5'], desc:'ミントグリーン・さわやか系' },
+  warm_cream:   { name:'ウォームクリーム', colors:['#FFF3E0','#F4D58D'], desc:'クリーム・ゴールド系' },
+  dark_rose:    { name:'ダークローズ',     colors:['#3D1F2D','#E8728A'], desc:'ディープローズ・洗練系' }
+};
+
+const FONT_CONFIG = {
+  shippori:    { name:'しっぽり明朝',        family:'"Shippori Mincho"',    css:'Shippori Mincho',    preview:'愛と美' },
+  noto_sans:   { name:'Noto Sans JP',        family:'"Noto Sans JP"',       css:'Noto Sans JP',       preview:'心の声' },
+  noto_serif:  { name:'Noto Serif JP',       family:'"Noto Serif JP"',      css:'Noto Serif JP',      preview:'品と格' },
+  zen_maru:    { name:'Zen 丸ゴシック',      family:'"Zen Maru Gothic"',    css:'Zen Maru Gothic',    preview:'まるい' },
+  mplus:       { name:'M PLUS Rounded',      family:'"M PLUS Rounded 1c"',  css:'M PLUS Rounded 1c',  preview:'やさしく' },
+  dela:        { name:'Dela Gothic One',     family:'"Dela Gothic One"',    css:'Dela Gothic One',    preview:'インパクト' }
+};
+
+const BUZZ_WORDS = [
+  { word:'蛙化現象',         theme:'love' },
+  { word:'マッチングアプリ疲れ', theme:'love' },
+  { word:'好き避け',         theme:'love' },
+  { word:'恋愛脳',           theme:'love' },
+  { word:'推し活恋愛',       theme:'love' },
+  { word:'草食系男子',       theme:'love' },
+  { word:'朝活',             theme:'life' },
+  { word:'モーニングルーティン', theme:'life' },
+  { word:'デジタルデトックス', theme:'life' },
+  { word:'セルフケア',       theme:'self' },
+  { word:'自分軸',           theme:'self' },
+  { word:'マインドフルネス', theme:'mind' },
+  { word:'HSP',              theme:'self' },
+  { word:'繊細さん',         theme:'self' },
+  { word:'境界線',           theme:'relationship' },
+  { word:'アダルトチルドレン', theme:'avoid' },
+  { word:'インナーチャイルド', theme:'avoid' },
+  { word:'マウンティング',   theme:'relationship' },
+  { word:'エナジーバンパイア', theme:'relationship' },
+  { word:'心理的安全性',     theme:'relationship' },
+  { word:'共依存',           theme:'avoid' },
+  { word:'距離感',           theme:'relationship' },
+  { word:'映え投稿術',       theme:'life' },
+  { word:'保存されるSNS',    theme:'life' },
+  { word:'フォロワー増加術', theme:'life' },
+  { word:'メンタルリセット', theme:'mind' },
+  { word:'成長マインド',     theme:'mind' },
+  { word:'ポジティブ変換',   theme:'mind' },
+  { word:'自己投資',         theme:'self' },
+  { word:'一人時間の過ごし方', theme:'life' }
+];
+
+let curTheme = 'love';
+let curContent = 'compare5';
+let curStyle = 'soft_pink';
+let curFont = 'shippori';
+let curTab = 'ja';
+let currentPromptData = {};
+
+const KW_MAP = {};
+Object.entries(CONTENT_DB).forEach(function(e) {
+  e[1].kw.forEach(function(kw) { KW_MAP[kw] = e[0]; });
+});
+
+// ==================== 🔐 パスワードチェック ====================
+function checkPassword() {
+  const pw = document.getElementById('accessPassword').value;
+  if (pw === 'chinokun') {
+    document.getElementById('passwordOverlay').style.display = 'none';
+    sessionStorage.setItem('nanobanana_unlocked', 'true');
+  } else {
+    document.getElementById('pwError').style.display = 'block';
+  }
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', function() {
+  // パスワードのセッションチェック
+  if (sessionStorage.getItem('nanobanana_unlocked') === 'true') {
+    document.getElementById('passwordOverlay').style.display = 'none';
+  }
+
+  renderCharGallery('boys'); 
+  updateCharDesc();          
+  renderThemeGrid();
+  renderContentGrid();
+  renderStyleGrid();
+  renderFontGrid();
+  shuffleBuzz();
+  refreshAllSections();
+  loadApiKey(); 
+});
+
+// =================== CHAR GALLERY FUNCTIONS ===================
+function switchCharTab(btn, tab) {
+  curCharTab = tab;
+  document.querySelectorAll('.char-tab').forEach(function(t){ t.classList.remove('active'); });
+  btn.classList.add('active');
+  renderCharGallery(tab);
+}
+
+function renderCharGallery(tab) {
+  var gallery = document.getElementById('charGallery');
+  var chars = CHARS[tab] || [];
+  var html = '';
+  for (var i = 0; i < chars.length; i++) {
+    var c = chars[i];
+    var isSel = c.id === curChar ? ' sel' : '';
+    var imgTag = '';
+    if (c.img && c.img.length > 10) {
+      imgTag = '<img src="' + c.img + '" alt="' + c.line1 + '" loading="lazy">';
+    } else {
+      var emoji = tab === 'girls' ? '👧' : '✨';
+      imgTag = '<img src="data:image/svg+xml,%3Csvg xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22 width%3D%2280%22 height%3D%2280%22%3E%3Crect width%3D%2280%22 height%3D%2280%22 fill%3D%22%23EDE0E8%22%2F%3E%3Ctext x%3D%2240%22 y%3D%2248%22 text-anchor%3D%22middle%22 font-size%3D%2226%22%3E' + emoji + '%3C%2Ftext%3E%3C%2Fsvg%3E" alt="">';
+    }
+    html += '<div class="char-card' + isSel + '" data-charid="' + c.id + '" onclick="pickChar(this.dataset.charid)">'
+      + imgTag
+      + '<div class="char-card-name">' + c.line1 + (c.line2 ? '<br>' + c.line2 : '') + '</div>'
+      + '<div class="char-check">✓</div>'
+      + '</div>';
+  }
+  gallery.innerHTML = html;
+}
+
+function pickChar(id) {
+  curChar = id;
+  var all = [].concat(CHARS.boys, CHARS.girls, CHARS.both);
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].id === id) {
+      document.getElementById('charDesc').value = all[i].desc;
+      break;
+    }
+  }
+  renderCharGallery(curCharTab);
+}
+
+function updateCharDesc() {
+  var all = [].concat(CHARS.boys, CHARS.girls, CHARS.both);
+  for (var i = 0; i < all.length; i++) {
+    if (all[i].id === curChar) {
+      var el = document.getElementById('charDesc');
+      if (el) el.value = all[i].desc;
+      return;
+    }
+  }
+}
+
+// ==================== API KEY MANAGEMENT ====================
+function saveApiKey() {
+  var key = document.getElementById('apiKeyInput').value.trim();
+  var statusEl = document.getElementById('apiKeyStatus');
+  if (key) {
+    localStorage.setItem('nanobanana_gemini_api_key', key);
+    statusEl.textContent = '✓ ブラウザに保存しました！';
+    setTimeout(function(){ statusEl.textContent = ''; }, 3000);
+  } else {
+    localStorage.removeItem('nanobanana_gemini_api_key');
+    statusEl.textContent = 'キーを削除しました';
+  }
+}
+
+function loadApiKey() {
+  var key = localStorage.getItem('nanobanana_gemini_api_key');
+  if (key) {
+    document.getElementById('apiKeyInput').value = key;
+  }
+}
+
+function getApiKey() {
+  var key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) {
+    alert('⚠️ 上部の「Gemini APIキー設定」にAPIキーを入力してください。\n（※新しいプロジェクトで取得したキーを使用してください）');
+    return null;
+  }
+  return key;
+}
+
+// ==================== RENDER GRIDS ====================
+function renderThemeGrid() {
+  var g = document.getElementById('themeGrid'); g.innerHTML = '';
+  Object.entries(THEME_CONFIG).forEach(function(e) {
+    var id = e[0], cfg = e[1];
+    var d = document.createElement('div');
+    d.className = 'theme-card' + (id === curTheme ? ' sel' : '');
+    d.style.setProperty('--tc', cfg.color);
+    d.dataset.theme = id;
+    d.onclick = function() { selTheme(d); };
+    d.innerHTML = '<div class="theme-icon">' + cfg.icon + '</div><div class="theme-name">' + cfg.name + '</div><div class="theme-sub">' + cfg.sub + '</div>';
+    g.appendChild(d);
+  });
+}
+
+function renderContentGrid() {
+  var g = document.getElementById('contentGrid'); g.innerHTML = '';
+  Object.entries(CONTENT_CONFIG).forEach(function(e) {
+    var id = e[0], cfg = e[1];
+    var b = document.createElement('button');
+    b.className = 'content-btn' + (id === curContent ? ' sel' : '');
+    b.dataset.content = id;
+    b.onclick = function() { selContent(b); };
+    b.textContent = cfg.icon + ' ' + cfg.name;
+    g.appendChild(b);
+  });
+}
+
+function renderStyleGrid() {
+  var g = document.getElementById('styleGrid'); g.innerHTML = '';
+  Object.entries(STYLE_DESC).forEach(function(e) {
+    var id = e[0], cfg = e[1];
+    var b = document.createElement('div');
+    b.className = 'style-btn' + (id === curStyle ? ' sel' : '');
+    b.dataset.style = id;
+    b.onclick = function() { selStyle(b); };
+    b.innerHTML = '<div class="style-swatch" style="background:linear-gradient(135deg,' + cfg.colors[0] + ',' + cfg.colors[1] + ')"></div><div class="style-name">' + cfg.name + '</div>';
+    g.appendChild(b);
+  });
+}
+
+function renderFontGrid() {
+  var g = document.getElementById('fontGrid'); g.innerHTML = '';
+  Object.entries(FONT_CONFIG).forEach(function(e) {
+    var id = e[0], cfg = e[1];
+    var b = document.createElement('div');
+    b.className = 'font-btn' + (id === curFont ? ' sel' : '');
+    b.dataset.font = id;
+    b.onclick = function() { selFont(b); };
+    b.innerHTML = '<div class="font-preview" style="font-family:' + cfg.family + ',sans-serif">' + cfg.preview + '</div><div class="font-name">' + cfg.name + '</div>';
+    g.appendChild(b);
+  });
+}
+
+// ==================== BUZZ ====================
+function shuffleBuzz() {
+  var arr = BUZZ_WORDS.slice();
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+  var picks = arr.slice(0, 10);
+  var c = document.getElementById('buzzChips'); c.innerHTML = '';
+  picks.forEach(function(bw) {
+    var chip = document.createElement('span');
+    chip.className = 'buzz-chip';
+    chip.textContent = bw.word;
+    chip.onclick = function() {
+      document.getElementById('autoInput').value = bw.word;
+      var tc = document.querySelector('[data-theme="' + bw.theme + '"]');
+      if (tc) selTheme(tc);
+    };
+    c.appendChild(chip);
+  });
+}
+
+// ==================== SELECTORS ====================
+function selTheme(el) {
+  document.querySelectorAll('.theme-card').forEach(function(c) { c.classList.remove('sel'); });
+  el.classList.add('sel');
+  curTheme = el.dataset.theme;
+  refreshAllSections();
+}
+
+function selContent(el) {
+  document.querySelectorAll('.content-btn').forEach(function(b) { b.classList.remove('sel'); });
+  el.classList.add('sel');
+  curContent = el.dataset.content;
+  refreshAllSections();
+}
+
+function selStyle(el) {
+  document.querySelectorAll('.style-btn').forEach(function(b) { b.classList.remove('sel'); });
+  el.classList.add('sel');
+  curStyle = el.dataset.style;
+}
+
+function selFont(el) {
+  document.querySelectorAll('.font-btn').forEach(function(b) { b.classList.remove('sel'); });
+  el.classList.add('sel');
+  curFont = el.dataset.font;
+}
+
+// ==================== REFRESH ====================
+function refreshAllSections() {
+  document.getElementById('compareSection').style.display = 'none';
+  document.getElementById('rankingSection').style.display = 'none';
+  document.getElementById('checklistSection').style.display = 'none';
+  document.getElementById('tierSection').style.display = 'none';
+  document.getElementById('quoteSection').style.display = 'none';
+
+  var db = CONTENT_DB[curTheme];
+
+  if (curContent === 'compare5') {
+    document.getElementById('compareSection').style.display = 'block';
+    document.getElementById('labelLeftText').textContent = '❤️ ポジティブ側';
+    document.getElementById('labelLeft').value = db.label.ll;
+    document.getElementById('labelRight').value = db.label.lr;
+    document.getElementById('labelRightWrap').style.display = 'block';
+    renderCompareItems(db.compare);
+  } else if (curContent === 'compare3') {
+    document.getElementById('compareSection').style.display = 'block';
+    document.getElementById('labelLeftText').textContent = '❤️ ポジティブ側';
+    document.getElementById('labelLeft').value = db.label.ll;
+    document.getElementById('labelRight').value = db.label.lr;
+    document.getElementById('labelRightWrap').style.display = 'block';
+    renderCompareItems(db.compare.slice(0, 3));
+  } else if (curContent === 'ranking') {
+    document.getElementById('rankingSection').style.display = 'block';
+    renderRankingItems(db.ranking);
+  } else if (curContent === 'checklist') {
+    document.getElementById('checklistSection').style.display = 'block';
+    renderChecklistItems(db.ranking.map(function(t) { return { text: t, checked: false }; }));
+  } else if (curContent === 'tierlist') {
+    document.getElementById('tierSection').style.display = 'block';
+    renderTierItems(db.tier);
+  } else if (curContent === 'quote') {
+    document.getElementById('quoteSection').style.display = 'block';
+    document.getElementById('quoteText').value = db.quote.join('\n\n');
+  }
+}
+
+// ==================== RENDER ITEMS ====================
+function renderCompareItems(items) {
+  var c = document.getElementById('compareItems'); c.innerHTML = '';
+  items.forEach(function(pair, i) {
+    var row = document.createElement('div');
+    row.className = 'compare-item';
+    row.innerHTML = '<div class="compare-item-side"><input class="item-input" type="text" value="' + (pair[0]||'').replace(/"/g,'&quot;') + '" placeholder="ポジティブ側"></div>'
+      + '<div class="vs-badge">VS</div>'
+      + '<div class="compare-item-side"><input class="item-input" type="text" value="' + (pair[1]||'').replace(/"/g,'&quot;') + '" placeholder="ネガティブ側"></div>'
+      + '<button class="btn-del" onclick="this.parentElement.remove()">✕</button>';
+    c.appendChild(row);
+  });
+}
+
+function addItem() {
+  var c = document.getElementById('compareItems');
+  var row = document.createElement('div');
+  row.className = 'compare-item';
+  row.innerHTML = '<div class="compare-item-side"><input class="item-input" type="text" placeholder="ポジティブ側"></div><div class="vs-badge">VS</div><div class="compare-item-side"><input class="item-input" type="text" placeholder="ネガティブ側"></div><button class="btn-del" onclick="this.parentElement.remove()">✕</button>';
+  c.appendChild(row);
+}
+
+function renderRankingItems(items) {
+  var c = document.getElementById('rankingItems'); c.innerHTML = '';
+  items.forEach(function(item, i) {
+    var row = document.createElement('div');
+    row.className = 'ranking-item';
+    row.innerHTML = '<div class="ranking-num">' + (i+1) + '</div><input class="ranking-item-input" type="text" value="' + item.replace(/"/g,'&quot;') + '" placeholder="ランキング項目"><button class="btn-del" onclick="this.parentElement.remove();updateRankingNumbers()">✕</button>';
+    c.appendChild(row);
+  });
+}
+
+function addRankingItem() {
+  var c = document.getElementById('rankingItems');
+  var row = document.createElement('div');
+  row.className = 'ranking-item';
+  row.innerHTML = '<div class="ranking-num">' + (c.children.length + 1) + '</div><input class="ranking-item-input" type="text" placeholder="ランキング項目"><button class="btn-del" onclick="this.parentElement.remove();updateRankingNumbers()">✕</button>';
+  c.appendChild(row);
+}
+
+function updateRankingNumbers() {
+  document.querySelectorAll('.ranking-num').forEach(function(el, i) { el.textContent = i + 1; });
+}
+
+function renderChecklistItems(items) {
+  var c = document.getElementById('checklistItems'); c.innerHTML = '';
+  items.forEach(function(item) {
+    var row = document.createElement('div');
+    row.className = 'checklist-item';
+    row.innerHTML = '<input type="checkbox" style="width:18px;height:18px;flex-shrink:0;cursor:pointer;"><input class="checklist-item-input" style="background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--ink);font-family:\'Noto Sans JP\',sans-serif;font-size:12px;padding:8px 10px;outline:none;flex:1;" type="text" value="' + item.text.replace(/"/g,'&quot;') + '" placeholder="チェック項目"><button class="btn-del" onclick="this.parentElement.remove()">✕</button>';
+    c.appendChild(row);
+  });
+}
+
+function addChecklistItem() {
+  var c = document.getElementById('checklistItems');
+  var row = document.createElement('div');
+  row.className = 'checklist-item';
+  row.innerHTML = '<input type="checkbox" style="width:18px;height:18px;flex-shrink:0;cursor:pointer;"><input class="checklist-item-input" style="background:var(--card);border:1.5px solid var(--border);border-radius:9px;color:var(--ink);font-family:\'Noto Sans JP\',sans-serif;font-size:12px;padding:8px 10px;outline:none;flex:1;" type="text" placeholder="チェック項目"><button class="btn-del" onclick="this.parentElement.remove()">✕</button>';
+  c.appendChild(row);
+}
+
+function renderTierItems(tierData) {
+  var c = document.getElementById('tierRows'); c.innerHTML = '';
+  var tiers = [{k:'s',l:'S',b:'t-s'},{k:'a',l:'A',b:'t-a'},{k:'b',l:'B',b:'t-b'},{k:'c',l:'C',b:'t-c'},{k:'d',l:'D',b:'t-d'}];
+  tiers.forEach(function(t) {
+    var row = document.createElement('div');
+    row.className = 'tier-row';
+    row.innerHTML = '<div class="tier-badge ' + t.b + '">' + t.l + '</div><input class="tier-input" type="text" value="' + (tierData[t.k]||'').replace(/"/g,'&quot;') + '" placeholder="ティア説明">';
+    c.appendChild(row);
+  });
+}
+
+// ==================== TAB ====================
+function switchTab(btn, tab) {
+  document.querySelectorAll('.prompt-tab').forEach(function(b) { b.classList.remove('sel'); });
+  btn.classList.add('sel');
+  curTab = tab;
+  document.getElementById('promptJa').style.display = tab === 'ja' ? 'block' : 'none';
+  document.getElementById('promptEn').style.display = tab === 'en' ? 'block' : 'none';
+  document.getElementById('promptTips').style.display = tab === 'tips' ? 'block' : 'none';
+}
+
+// ==================== GENERATE PROMPT ====================
+function generatePrompt() {
+  var charDesc = document.getElementById('charDesc').value;
+  var style = STYLE_DESC[curStyle];
+  var font = FONT_CONFIG[curFont];
+  var ratio = document.getElementById('aspectRatio').value;
+  var detail = document.getElementById('detail').value;
+  var extra = document.getElementById('extraNotes').value;
+  var db = CONTENT_DB[curTheme];
+
+  var contentText = '';
+  var previewHtml = '';
+
+  if (curContent === 'compare5' || curContent === 'compare3') {
+    var items = [];
+    document.querySelectorAll('#compareItems .compare-item').forEach(function(el) {
+      var inputs = el.querySelectorAll('.item-input');
+      items.push([inputs[0].value || '', inputs[1].value || '']);
+    });
+    contentText = items.map(function(p, i) { return (i+1) + '. 《' + p[0] + '》 vs 《' + p[1] + '》'; }).join('\n');
+    previewHtml = '<div class="preview-title">📊 プレビュー</div>' + items.map(function(p) {
+      return '<div class="prev-row"><div class="prev-pos">' + p[0] + '</div><div class="prev-vs">VS</div><div class="prev-neg">' + p[1] + '</div></div>';
+    }).join('');
+  } else if (curContent === 'ranking') {
+    var items = [];
+    document.querySelectorAll('#rankingItems .ranking-item-input').forEach(function(el, i) {
+      items.push((i+1) + '位: ' + (el.value || ''));
+    });
+    contentText = items.join('\n');
+    previewHtml = '<div class="preview-title">🏆 プレビュー</div>' + items.map(function(t) {
+      return '<div style="padding:6px 8px;background:rgba(232,114,138,.07);border-radius:6px;margin-bottom:4px;font-size:11px;">' + t + '</div>';
+    }).join('');
+  } else if (curContent === 'checklist') {
+    var items = [];
+    document.querySelectorAll('#checklistItems .checklist-item-input').forEach(function(el) {
+      items.push('☐ ' + (el.value || ''));
+    });
+    contentText = items.join('\n');
+    previewHtml = '<div class="preview-title">✅ プレビュー</div>' + items.map(function(t) {
+      return '<div style="padding:6px 8px;background:rgba(232,114,138,.07);border-radius:6px;margin-bottom:4px;font-size:11px;">' + t + '</div>';
+    }).join('');
+  } else if (curContent === 'tierlist') {
+    var tiers = {};
+    document.querySelectorAll('#tierRows .tier-row').forEach(function(row, i) {
+      var keys = ['s','a','b','c','d'];
+      tiers[keys[i]] = row.querySelector('.tier-input').value;
+    });
+    contentText = Object.entries(tiers).map(function(e) { return e[0].toUpperCase() + ': ' + e[1]; }).join('\n');
+    var tierBadges = {s:'t-s',a:'t-a',b:'t-b',c:'t-c',d:'t-d'};
+    previewHtml = '<div class="preview-title">🎯 プレビュー</div>' + Object.entries(tiers).map(function(e) {
+      return '<div class="tier-prev-row"><div class="tier-prev-badge ' + tierBadges[e[0]] + '">' + e[0].toUpperCase() + '</div><div class="tier-prev-content">' + e[1] + '</div></div>';
+    }).join('');
+  } else if (curContent === 'quote') {
+    contentText = document.getElementById('quoteText').value;
+    previewHtml = '<div class="preview-title">💭 プレビュー</div><div style="padding:10px;background:rgba(232,114,138,.07);border-radius:8px;font-size:12px;white-space:pre-wrap;font-style:italic;">' + contentText.substring(0,150) + '</div>';
+  }
+
+  var ll = (document.getElementById('labelLeft') || {}).value || db.label.ll;
+  var lr = (document.getElementById('labelRight') || {}).value || db.label.lr;
+  var themeName = THEME_CONFIG[curTheme].name;
+  var contentName = CONTENT_CONFIG[curContent].name;
+  var detailDesc = detail === 'detailed' ? '情報量多め・保存率重視' : detail === 'minimal' ? '余白多め・おしゃれ感' : '標準的な詳細度';
+
+  // Japanese prompt
+  var ja = '【nanobanana pro プロンプト — ' + contentName + '】\n\n'
+    + '━━ コンセプト ━━\n'
+    + 'SNSで「わかる！」「保存した！」と言われる画像を作ってください。\n'
+    + 'テーマ：' + themeName + '\n'
+    + '形式：' + contentName + '\n'
+    + (curContent.indexOf('compare') >= 0 ? 'タイトル：「' + ll + ' vs ' + lr + '」\n' : '')
+    + '\n━━ 内容 ━━\n' + contentText + '\n'
+    + '\n━━ キャラクター ━━\n' + charDesc + '\n'
+    + '\n━━ ビジュアル ━━\n'
+    + '・カラー：' + style.name + '（' + style.desc + '）\n'
+    + '・フォント：' + font.name + '（' + font.css + '）\n'
+    + '・アスペクト比：' + ratio + '\n'
+    + '・密度：' + detailDesc + '\n'
+    + '・下部に「保存して読み返してね💕」の一言\n'
+    + (extra ? '\n━━ 追加指示 ━━\n' + extra + '\n' : '')
+    + '\n「わかる！」「刺さる！」「保存した！」と言われる画像にしてください。';
+
+  // English prompt
+  var en = '[nanobanana pro — ' + contentName + ']\n\n'
+    + 'Theme: ' + themeName + '\n'
+    + 'Format: ' + contentName + '\n'
+    + 'Character: ' + charDesc + '\n'
+    + 'Content:\n' + contentText + '\n'
+    + 'Colors: ' + style.name + ' (' + style.desc + ')\n'
+    + 'Font: ' + font.name + ' (' + font.css + ')\n'
+    + 'Aspect ratio: ' + ratio + '\n'
+    + 'Detail: ' + detailDesc;
+
+  // Tips
+  var tips = '📖 Tips & コツ\n\n'
+    + '1. 比較の言葉は「具体的な行動」で書く\n   ✘ 優しい人 → ✔ 相手の話を最後まで聴く\n\n'
+    + '2. キャラの感情表現を細かく指示すると◎\n   「ほっこり笑顔」「照れ顔」「ため息表情」\n\n'
+    + '3. 結尾に必ずCTAを入れる\n   「全部当てはまった人→保存！💕」\n   「何番が刺さった？コメントで教えて」\n\n'
+    + '4. フォント「' + font.name + '」を指定中\n   Geminiに「' + font.css + 'フォントで」と追加指示するのも効果的\n\n'
+    + '5. シリーズ化で統一感を出す\n   同じキャラ＋同じカラートーンで連続投稿するとフォロワーが増えます！';
+
+  currentPromptData = { ja: ja, en: en, tips: tips };
+  document.getElementById('promptJa').textContent = ja;
+  document.getElementById('promptEn').textContent = en;
+  document.getElementById('promptTips').textContent = tips;
+  document.getElementById('previewCard').innerHTML = previewHtml;
+  document.getElementById('outputBox').classList.add('show');
+  document.getElementById('btnImgGen').style.display = 'block';
+  document.getElementById('imgResult').style.display = 'none';
+
+  // Show ja tab
+  var jaTab = document.querySelector('.prompt-tab');
+  if (jaTab) switchTab(jaTab, 'ja');
+
+  // Generate SNS post
+  generateSnsPost();
+
+  setTimeout(function() {
+    document.getElementById('outputBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+// ==================== SNS POST ====================
+function generateSnsPost() {
+  var db = CONTENT_DB[curTheme];
+  var ll = db.label.ll;
+  var lr = db.label.lr;
+  var themeName = THEME_CONFIG[curTheme].name;
+
+  var hooks = {
+    love: 'これ、知ってた？\n「愛される人」と「そうじゃない人」の差は、実は日常の小さな習慣にある。',
+    avoid: '恋愛が苦しくなるのは、あなたのせいじゃない。\n「愛着スタイル」を知れば、自分の恋愛パターンが見えてくる。',
+    self:  '自己肯定感って、生まれつきのものだと思ってない？\n違う。これは後天的に育てられる。',
+    mind:  '変われないのは、意志が弱いからじゃない。\nやり方が自分に合っていないだけだ。',
+    relationship: '人間関係で消耗している人に届いてほしい。\n大切にされる人には、必ず共通点がある。',
+    life:  '「なんとなく毎日が過ぎていく」と感じている人に。\n生活の充実度は、小さな習慣で決まる。'
+  };
+
+  var middles = {
+    compare5: '「' + ll + '」と「' + lr + '」を並べてみると\n自分がどちら側にいるか、はっきり見えてくる。\n\nこの5つの違い、全部知ってた？',
+    compare3: 'たった3つの違いだけど、\nこの差が人生を大きく変える。',
+    ranking:  '上位に来るほど、意識しにくいけれど大切なこと。\nランキング形式で整理してみた。',
+    tierlist: 'どのランクが自分に当てはまるか——\nティアリストで客観的に見てみよう。',
+    checklist:'チェックリストを見て、\n全部できてる人も、全然できてない人も——\n今日の自分でいい。',
+    quote:    '言葉にすると、情報は定着する。\nこの中で一番響いた言葉を覚えておいてほしい。'
+  };
+
+  var ctas = {
+    love: 'この画像の中で「これ、自分のことだ」と思ったもの——\nコメントで教えてもらえると嬉しい。\n\n保存して、ふとした時に読み返してみて。',
+    avoid: '「あ、これ私だ」と思った項目があれば、\nそれは変われるサインかもしれない。\n\n保存して、落ち着いた時に読み返してね。',
+    self:  '全部できてなくて大丈夫。\n今日の自分を「まあいいか」と思えたら、それが第一歩。\n\n保存しておいて損はないと思う。',
+    mind:  '何番が一番刺さった？\nコメントで教えて。\n\n保存して、迷った時の判断軸にしてみて。',
+    relationship: '「この関係、なんか疲れてる」と感じたら\nまず自分のパターンを見つめてみる。\n\n保存して、関係を見直す機会にしてほしい。',
+    life:  '「今日から一つだけ変えてみる」\nそのきっかけになったら十分だ。\n\n保存して、気が向いた時に読み返して。'
+  };
+
+  var tags = {
+    love: '#恋愛 #モテ #愛される人 #心理学 #自己成長 #共感 #保存推奨',
+    avoid: '#愛着スタイル #回避型 #不安型 #恋愛心理 #自己理解 #メンタルヘルス',
+    self:  '#自己肯定感 #自分を愛する #心理学 #メンタル #自己成長 #気づき',
+    mind:  '#マインドセット #成長 #行動力 #自己啓発 #メンタル #気づき #変わる',
+    relationship: '#人間関係 #コミュニケーション #信頼 #自己成長 #共感 #気づき',
+    life:  '#生活習慣 #朝活 #ルーティン #シンプルライフ #自己成長 #充実'
+  };
+
+  var post = hooks[curTheme] + '\n\n'
+    + middles[curContent] + '\n\n'
+    + ctas[curTheme] + '\n\n'
+    + tags[curTheme];
+
+  document.getElementById('snsPostText').textContent = post;
+  document.getElementById('snsPostBox').classList.add('show');
+}
+
+// ==================== COPY ====================
+function copyToClipboard(text, btnId) {
+  function done() {
+    var btn = document.getElementById(btnId);
+    if (btn) {
+      var orig = btn.textContent;
+      btn.textContent = '✓ コピー済み';
+      btn.classList.add('done');
+      setTimeout(function() { btn.textContent = orig; btn.classList.remove('done'); }, 2000);
+    }
+  }
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done).catch(function() { fallbackCopy(text); done(); });
+  } else {
+    fallbackCopy(text); done();
+  }
+}
+
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try { document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+}
+
+function copyPrompt() {
+  copyToClipboard(currentPromptData[curTab] || '', 'btnCopyPrompt');
+}
+
+function copySnsPost() {
+  copyToClipboard(document.getElementById('snsPostText').textContent, 'btnCopySns');
+}
+
+// ==================== THEME FROM KEYWORD ====================
+function themeFromKeyword(q) {
+  if (!q) return curTheme;
+  for (var kw in KW_MAP) {
+    if (q.indexOf(kw) >= 0) return KW_MAP[kw];
+  }
+  return curTheme;
+}
+
+// ==================== AUTO GENERATE (GEMINI API) ====================
+function autoGenerate() {
+  var apiKey = getApiKey();
+  if (!apiKey) return;
+
+  var input = document.getElementById('autoInput').value.trim();
+  var statusEl = document.getElementById('autoStatus');
+  var btn = document.getElementById('btnAuto');
+
+  if (!input) {
+    statusEl.textContent = '⚠️ キーワードを入力してください';
+    return;
+  }
+
+  statusEl.innerHTML = '<span class="spinner spinner-dark"></span> Gemini AIで生成中...';
+  btn.disabled = true;
+
+  var detected = themeFromKeyword(input);
+  if (detected !== curTheme) {
+    var tc = document.querySelector('[data-theme="' + detected + '"]');
+    if (tc) selTheme(tc);
+  }
+
+  var prompt = buildGeminiTextPrompt(input);
+
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 30000);
+
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/' + TEXT_MODEL + ':generateContent?key=' + apiKey, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
+    signal: controller.signal
+  })
+  .then(async function(res) {
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      const errMsg = errData.error && errData.error.message ? errData.error.message : res.statusText;
+      throw new Error(res.status + ' ' + errMsg);
+    }
+    return res.json();
+  })
+  .then(function(data) {
+    var text = data.candidates[0].content.parts[0].text;
+    fillGeneratedContent(text);
+    statusEl.textContent = '✨ AI生成完了！内容を確認・編集して「プロンプトを生成」へ';
+  })
+  .catch(function(err) {
+    console.error('Gemini API error:', err);
+    if (err.name === 'AbortError') {
+      statusEl.textContent = '⚠️ タイムアウト。デフォルト内容を使用します。';
+    } else {
+      statusEl.textContent = '⚠️ APIエラー: ' + err.message;
+    }
+    refreshAllSections();
+  })
+  .finally(function() {
+    btn.disabled = false;
+  });
+}
+
+function buildGeminiTextPrompt(userInput) {
+  var db = CONTENT_DB[curTheme];
+  var base = '「' + userInput + '」というテーマで、SNS投稿用の比較コンテンツを日本語で生成してください。\n\n';
+
+  if (curContent === 'compare5') {
+    return base + '5つの対比項目を以下の形式で出力してください。各行は「|」で区切ってください。\n\nポジティブ側の具体的行動 | ネガティブ側の具体的行動\n\n例:\n相手の話を最後まで聞く | 自分の話ばかりする\n\n5行出力してください。余計な説明は不要です。';
+  } else if (curContent === 'compare3') {
+    return base + '3つの対比項目を以下の形式で出力してください。各行は「|」で区切ってください。\n\nポジティブ側 | ネガティブ側\n\n3行出力してください。余計な説明は不要です。';
+  } else if (curContent === 'ranking') {
+    return base + 'トップ5ランキングを以下の形式で出力してください。\n\n1. 項目名\n2. 項目名\n...\n\n5つ出力してください。余計な説明は不要です。';
+  } else if (curContent === 'tierlist') {
+    return base + 'S～Dの5段階ティアリストを以下の形式で出力してください。\n\nS: 説明\nA: 説明\nB: 説明\nC: 説明\nD: 説明\n\n余計な説明は不要です。';
+  } else if (curContent === 'checklist') {
+    return base + 'チェックリスト5～7項目を以下の形式で出力してください。\n\n- 項目1\n- 項目2\n...\n\n余計な説明は不要です。';
+  } else if (curContent === 'quote') {
+    return base + '心に刺さる名言・気づきを2～3個、改行で区切って出力してください。余計な説明は不要です。';
+  }
+  return base;
+}
+
+function fillGeneratedContent(text) {
+  var lines = text.split('\n').filter(function(l) { return l.trim().length > 0; });
+
+  if (curContent === 'compare5' || curContent === 'compare3') {
+    var items = [];
+    lines.forEach(function(line) {
+      line = line.replace(/^\d+[\.\)]\s*/, '').replace(/^\*+\s*/, '').replace(/^-\s*/, '');
+      var parts = line.split('|');
+      if (parts.length >= 2) {
+        items.push([parts[0].trim(), parts[1].trim()]);
+      } else if (line.indexOf(' vs ') >= 0) {
+        parts = line.split(' vs ');
+        items.push([parts[0].trim(), parts[1].trim()]);
+      }
+    });
+    var max = curContent === 'compare5' ? 5 : 3;
+    if (items.length > 0) renderCompareItems(items.slice(0, max));
+  } else if (curContent === 'ranking') {
+    var items = [];
+    lines.forEach(function(line) {
+      var clean = line.replace(/^\d+[\.\)]\s*/, '').replace(/^\*+\s*/, '').replace(/^-\s*/, '').trim();
+      if (clean) items.push(clean);
+    });
+    if (items.length > 0) renderRankingItems(items.slice(0, 5));
+  } else if (curContent === 'tierlist') {
+    var tiers = { s:'', a:'', b:'', c:'', d:'' };
+    lines.forEach(function(line) {
+      var m = line.match(/^[*\-\s]*([SsAaBbCcDd])[:\uff1a]\s*(.+)/);
+      if (m) tiers[m[1].toLowerCase()] = m[2].trim();
+    });
+    renderTierItems(tiers);
+  } else if (curContent === 'checklist') {
+    var items = [];
+    lines.forEach(function(line) {
+      var clean = line.replace(/^[-•□✓☐✅\*]\s*/, '').replace(/^\d+[\.\)]\s*/, '').trim();
+      if (clean) items.push({ text: clean, checked: false });
+    });
+    if (items.length > 0) renderChecklistItems(items.slice(0, 7));
+  } else if (curContent === 'quote') {
+    document.getElementById('quoteText').value = lines.join('\n');
+  }
+}
+
+// ==================== 🌟 最新の Nano Banana 2 画像生成処理 🌟 ====================
+function generateImage() {
+  var apiKey = getApiKey();
+  if (!apiKey) return;
+
+  var btn = document.getElementById('btnImgGen');
+  var result = document.getElementById('imgResult');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> 画像生成中...（最大60秒）';
+  result.style.display = 'block';
+  result.innerHTML = '<div class="img-status"><span class="spinner spinner-dark"></span> Nano Banana 2が画像を生成しています...</div>';
+
+  var imgPrompt = currentPromptData.ja || '';
+  var finalPrompt = imgPrompt + "\n\nこの内容でSNS投稿用の高品質な画像を1枚生成してください。";
+
+  var controller = new AbortController();
+  var timeoutId = setTimeout(function() { controller.abort(); }, 60000);
+
+  fetch('https://generativelanguage.googleapis.com/v1beta/models/' + IMAGE_MODEL + ':generateContent?key=' + apiKey, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{
+        parts: [{ text: finalPrompt }]
+      }],
+      // ⚠️ 429エラー(limit:0) を回避するための安全設定OFF
+      safetySettings: [
+        { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_NONE" },
+        { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_NONE" }
+      ],
+      // ⚠️ 有料枠で弾かれないためのダミー兼設定
+      generationConfig: {
+        candidateCount: 1
+      }
+    }),
+    signal: controller.signal
+  })
+  .then(async function(res) {
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      const errMsg = errData.error && errData.error.message ? errData.error.message : res.statusText;
+      throw new Error(res.status + ' ' + errMsg);
+    }
+    return res.json();
+  })
+  .then(function(data) {
+    // 画像の取り出し
+    if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+      var parts = data.candidates[0].content.parts;
+      var imagePart = parts.find(function(p) { return p.inlineData; });
+      
+      if (imagePart) {
+        var b64 = imagePart.inlineData.data;
+        var mime = imagePart.inlineData.mimeType || 'image/png';
+        var imgSrc = 'data:' + mime + ';base64,' + b64;
+
+        result.innerHTML = '<img src="' + imgSrc + '" alt="生成画像" style="max-width:100%;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.12);">'
+          + '<br><a class="btn-dl" href="' + imgSrc + '" download="nanobanana_' + Date.now() + '.png">💾 画像をダウンロード</a>';
+      } else {
+        result.innerHTML = '<div class="img-status">⚠️ 画像データが見つかりませんでした。別のプロンプトをお試しください。</div>';
+      }
+    } else {
+      result.innerHTML = '<div class="img-status">⚠️ 予期せぬ応答形式でした。プロンプトを調整して再試行してください。</div>';
+    }
+  })
+  .catch(function(err) {
+    console.error('Image generation error:', err);
+    if (err.name === 'AbortError') {
+      result.innerHTML = '<div class="img-status">⚠️ タイムアウトしました。もう一度お試しください。</div>';
+    } else {
+      result.innerHTML = '<div class="img-status" style="color:#d9534f;">⚠️ APIエラー: ' + err.message + '<br><small>※キーが間違っているか、プロンプトが規約に引っかかった可能性があります。</small></div>';
+    }
+  })
+  .finally(function() {
+    btn.disabled = false;
+    btn.innerHTML = '🎨 この設定で画像を生成する';
+  });
+}
+</script>
+</body>
+</html>
